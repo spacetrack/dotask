@@ -17,7 +17,7 @@ my first go program to do some task journaling
      - jira://<id>
      - parent://<id>
 
-## Exmples
+## Examples
 
     dotask now admin work asana://123456789
     2014-10-10, 10:07 | 20141010-001 | admin work | asana://123456789
