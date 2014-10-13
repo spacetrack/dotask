@@ -2,22 +2,22 @@
 
 my first go program to do some task journaling
 
-## Commands simple
+## Commands
 
-    dotask list
-    dotask now <title>
-    dotask continue ID [now|<timestamp>]
-    dotask delete ID
+    dotask (l)ist | (s)how
+    dotask (n)ow <title>
+    dotask (c)ontinue <ID> [now|<timestamp>]
+    dotask delete <ID>
     dotask shutdown
 
-    dotask ID asis|now|<timestamp> [<title> ...]
+    dotask <ID> asis|now|<timestamp> [<title> ...]
 
     <title> parses for:
      - asana://<id>
      - jira://<id>
      - parent://<id>
 
-## Commands simple exmples
+## Exmples
 
     dotask now admin work asana://123456789
     2014-10-10, 10:07 | 20141010-001 | admin work | asana://123456789
@@ -65,44 +65,3 @@ my first go program to do some task journaling
     2014-10-10, 17:00 | 20141010-007 | (private)
     2014-10-10, 17:35 | 20141010-008 | title of the asna task | asana://123456790
     2014-10-10, 20:45 | 20141010-009 | shutdown
-
-
-## Commands complex
-
-  dotask help
-  dotask --help
-
-  dotask list[: (_today_|<date>|all)]
-
-  dotask note: <a string: note>
-
-  dotask shutdown
-
-  dotask <ID> [_show_|delete|clone]
-
-  dotask
-    [<ID>|_new_|last]
-    [now|(s|start)|(e|end)[:(_now_|<time>|<date+time>)]]
-
-    [(a|asana): <an asana id string>]
-
-    [(p|project): <a string: project name>]
-    [(t|title):   <a string: title>]
-    [(c|comment): <a string: comment>]
-
-
-## Command complex examples
-
-  dotask p: admin t: server upgrades
-  -> dotask
-      new
-      start: now
-      project: admin
-      title: server upgrades
-  <- task created:
-      1408445065-7531 | 2014-08-19 12:45 [admin] server upgrades | running
-      1408445065-7531 | 2014-08-19 12:45 [admin] munin check | 13:00 = 15 min
-
-
-
------
