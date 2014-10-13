@@ -37,7 +37,7 @@ func main() {
 	case "--help", "help":
 		writeUpdate = false
 
-		fmt.Println("dotask (l)ist")
+		fmt.Println("dotask (l)ist|(s)how")
 		fmt.Println("dotask (n)ow <title>")
 		fmt.Println("dotask (c)ontinue ID [_now_|<timestamp>]")
 		fmt.Println("dotask delete ID")
@@ -52,7 +52,7 @@ func main() {
 	// --- command "list"
 	// --- ... print the help text
 	// ---
-	case "l", "list":
+	case "l", "list", "s", "show":
 		writeUpdate = false
 		thisDay := ""
 
@@ -107,6 +107,11 @@ func main() {
 		tasks[t.Id] = t
 		fmt.Println(t)
 
+	// ---
+	// --- no command, but "<ID>"
+	// --- ... create a new task if ID == 0 or
+	// --  update existing task and store it
+	// ---
 	default:
 		writeUpdate = true
 
@@ -152,7 +157,11 @@ func main() {
 		}
 
 		// third: the title
-		t.Title = strings.Join(os.Args[3:], " ")
+		if(len(os.Args) > 3) {
+			if(os.Args[3] != "asis") {
+				t.Title = strings.Join(os.Args[3:], " ")
+			}
+		}
 
 		tasks[t.Id] = t
 		fmt.Println(t)
