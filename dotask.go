@@ -109,6 +109,47 @@ func main() {
 		tasks[t.Id] = t
 		fmt.Println(t)
 
+// ---
+// --- command "shutdown"
+// --- ... creates a new taks to indicate end of day.
+// --  almost the same as "dotask now shutdown"
+// ---
+// --- example: dotask shutdown now
+// --- example: dotask shutdown 20:30
+// ---
+case "shutdown":
+	writeUpdate = true
+	t = task.NewTask()
+	t.Title = "shutdown"
+
+	if(len(os.Args) > 2) {
+		if(os.Args[2] == "now") {
+			t.Timestamp = time.Now().Local()
+		} else {
+			// time only: "HH:mm"
+			if len(os.Args[2]) == 5 {
+				today := time.Now().Format("2006-01-02")
+				t.Timestamp, err = time.ParseInLocation("2006-01-02 15:04", today+" "+os.Args[2], loc)
+			}
+
+			// date + time: "dd.mm.YYYY-HH:mm"
+			if len(os.Args[2]) == 16 {
+				t.Timestamp, err = time.ParseInLocation("02.01.2006-15:04", os.Args[2], loc)
+			}
+
+			// date + time: "dd.mm.YY-HH:mm"
+			if len(os.Args[2]) == 14 {
+				t.Timestamp, err = time.ParseInLocation("02.01.06-15:04", os.Args[2], loc)
+			}
+		}
+	} else {
+		t.Timestamp = time.Now().Local()
+	}
+
+	tasks[t.Id] = t
+	fmt.Println(t)
+
+
 	// ---
 	// --- command "clone" / "continue"
 	// --- ... clone existing task and store it with new timestamp
