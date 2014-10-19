@@ -4,11 +4,11 @@ my first go program to do some task journaling
 
 ## Commands
 
-    dotask (l)ist | (s)how
+    dotask (l)ist|(s)how
     dotask (n)ow <title>
-    dotask (c)ontinue <ID> [now|<timestamp>]
+    dotask (c)clone|continue <ID> [now|<timestamp>]
     dotask delete <ID>
-    dotask shutdown
+    dotask shutdown [now|<timestamp>]
 
     dotask <ID> asis|now|<timestamp> [<title> ...]
 
