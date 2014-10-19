@@ -19,6 +19,8 @@ func main() {
 	var blob []byte
 	var err error
 
+	var loc = time.Now().Local().Location()
+
 	// only 1 argument? Fail!
 	if len(os.Args) < 2 {
 		fmt.Println("ERROR: invalid number of arugments; use \"dotask help\" for list of valid arguments")
@@ -29,7 +31,6 @@ func main() {
 	err = json.Unmarshal(blob, &tasks)
 
 	switch os.Args[1] {
-
 	// ---
 	// --- command "help"
 	// --- ... print the help text
@@ -88,6 +89,7 @@ func main() {
 		} else {
 			fmt.Println("DELETE failed")
 			fmt.Println(ok)
+			os.Exit(-1)
 		}
 
 		fmt.Println("DELETED:")
@@ -97,12 +99,59 @@ func main() {
 	// --- command "new"
 	// --- ... create a new task and store it
 	// ---
-	case "now":
+	case "n", "now":
 		writeUpdate = true
 
 		t = task.NewTask()
-		t.Timestamp = time.Now()
+		t.Timestamp = time.Now().Local()
 		t.Title = strings.Join(os.Args[2:], " ")
+
+		tasks[t.Id] = t
+		fmt.Println(t)
+
+	// ---
+	// --- command "clone" / "continue"
+	// --- ... clone existing task and store it with new timestamp
+	// ---
+	// --- example: dotask c 1413491670-9055 now
+	// ---
+	case "c", "clone", "continue":
+		writeUpdate = true
+
+		tSource, ok := tasks[os.Args[2]]
+
+		if ok {
+			t = task.NewTask()
+			t.Title = tSource.Title
+
+			if(len(os.Args) > 3) {
+				if(os.Args[3] == "now") {
+					t.Timestamp = time.Now().Local()
+				} else {
+					// time only: "HH:mm"
+					if len(os.Args[3]) == 5 {
+						today := time.Now().Format("2006-01-02")
+						t.Timestamp, err = time.ParseInLocation("2006-01-02 15:04", today+" "+os.Args[3], loc)
+					}
+
+					// date + time: "dd.mm.YYYY-HH:mm"
+					if len(os.Args[3]) == 16 {
+						t.Timestamp, err = time.ParseInLocation("02.01.2006-15:04", os.Args[3], loc)
+					}
+
+					// date + time: "dd.mm.YY-HH:mm"
+					if len(os.Args[3]) == 14 {
+						t.Timestamp, err = time.ParseInLocation("02.01.06-15:04", os.Args[3], loc)
+					}
+				}
+			} else {
+				t.Timestamp = time.Now().Local()
+			}
+		} else {
+			fmt.Println("CLONE failed")
+			fmt.Println(ok)
+			os.Exit(-1)
+		}
 
 		tasks[t.Id] = t
 		fmt.Println(t)
@@ -135,23 +184,23 @@ func main() {
 			// nothing
 
 		case "now":
-			t.Timestamp = time.Now()
+			t.Timestamp = time.Now().Local()
 
 		default:
 			// time only: "HH:mm"
 			if len(os.Args[2]) == 5 {
 				today := time.Now().Format("2006-01-02")
-				t.Timestamp, err = time.Parse("2006-01-02 15:04", today+" "+os.Args[2])
+				t.Timestamp, err = time.ParseInLocation("2006-01-02 15:04", today+" "+os.Args[2], loc)
 			}
 
 			// date + time: "dd.mm.YYYY-HH:mm"
 			if len(os.Args[2]) == 16 {
-				t.Timestamp, err = time.Parse("02.01.2006-15:04", os.Args[2])
+				t.Timestamp, err = time.ParseInLocation("02.01.2006-15:04", os.Args[2], loc)
 			}
 
 			// date + time: "dd.mm.YY-HH:mm"
 			if len(os.Args[2]) == 14 {
-				t.Timestamp, err = time.Parse("02.01.06-15:04", os.Args[2])
+				t.Timestamp, err = time.ParseInLocation("02.01.06-15:04", os.Args[2], loc)
 			}
 
 		}
