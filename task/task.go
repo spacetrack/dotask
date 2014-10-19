@@ -26,8 +26,8 @@ func NewTask() *Task {
 func (t *Task) String() string {
 	var result = ""
 
-	result = result + t.Timestamp.Format("2006-01-02 15:04") + " | "
 	result = result + t.Id + " | "
+	result = result + t.Timestamp.Format("2006-01-02 15:04") + " | "
 	result = result + t.Title
 
 	return result
