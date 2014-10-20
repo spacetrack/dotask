@@ -65,3 +65,5 @@ my first go program to do some task journaling
     20141010-007 | 2014-10-10, 17:00 | (private)
     20141010-008 | 2014-10-10, 17:35 | title of the asna task | asana://123456790
     20141010-009 | 2014-10-10, 20:45 | shutdown
+
+... examples will look somehow different with ongoing implementation. ;-)
