@@ -33,6 +33,23 @@ func (t *Task) String() string {
 	return result
 }
 
+
+// JSON support
+// https://eager.io/blog/go-and-json/
+
+//func (t *Task) MarshalJSON() ([]byte, error) {
+//	return []byte(fmt.Sprintf("%d/%d", m.MonthNumber, m.YearNumber)), nil
+//}
+
+//func (t *Task) UnmarshalJSON([]byte value) error {
+//    parts := strings.Split(string(value), "/")
+//    m.MonthNumber = fmt.ParseInt(parts[0], 10, 32)
+//    m.YearNumber = fmt.ParseInt(parts[1], 10, 32)
+//
+//    return nil
+//}
+
+// list of tasks sorted by date
 type ByDate []*Task
 
 func (t ByDate) Len() int {

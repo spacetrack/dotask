@@ -35,6 +35,15 @@ func main() {
 	// --- command "help"
 	// --- ... print the help text
 	// ---
+	case "-v", "--version", "version":
+		writeUpdate = false
+
+		fmt.Println("dotask version 0.9.3 - 2014-10-19; (c) 2014 by Björn Winkler")
+		fmt.Println("/* debug */")
+		fmt.Println(time.Now().Local().Zone())
+		fmt.Println(os.Getenv("TZ"))
+		os.Exit(0)
+
 	case "--help", "help":
 		writeUpdate = false
 
