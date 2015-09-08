@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spacetrack/dotask/task"
 	"io/ioutil"
 	"os"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/spacetrack/dotask/task"
 )
 
 func main() {
@@ -64,9 +65,10 @@ func main() {
 
 	// ---
 	// --- command "list"
-	// --- ... print the help text
+	// --- ... ll: show all tasks
+	// --- pending: filter tasks by number of days; default: -5
 	// ---
-	case "l", "list", "s", "show":
+	case "l", "ll", "list", "s", "show":
 		writeUpdate = false
 		thisDay := ""
 
@@ -111,10 +113,14 @@ func main() {
 	// --- command "new"
 	// --- ... create a new task and store it
 	// ---
-	case "n", "now", "now+", "now-":
+	case "n", "new", "now", "now+", "now-":
 		writeUpdate = true
 
 		if os.Args[1] == "n" {
+			os.Args[1] = "now"
+		}
+
+		if os.Args[1] == "new" {
 			os.Args[1] = "now"
 		}
 
@@ -133,7 +139,7 @@ func main() {
 	// --- example: dotask shutdown now
 	// --- example: dotask shutdown 20:30
 	// ---
-	case "sh", "shutdown":
+	case "sdown", "shutdown":
 		writeUpdate = true
 		t = task.NewTask()
 		t.Title = "shutdown"
@@ -214,6 +220,8 @@ func main() {
 		}
 
 		// third: the title
+		// ... or "-e", "--edit" for interactive editing (to avoid hassle
+		// with quotes and ampersands)
 		if len(os.Args) > 3 {
 			t.Title = strings.Join(os.Args[3:], " ")
 		}
