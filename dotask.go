@@ -37,7 +37,7 @@ func main() {
 	case "v", "-v", "version", "--version":
 		writeUpdate = false
 
-		fmt.Println("dotask version 0.9.5 - 2017-03-25 - (c) 2015-2017 by Björn Winkler")
+		fmt.Println("dotask version 1.0.0 - 2017-03-25 - (c) 2015-2017 by Björn Winkler")
 		os.Exit(0)
 
 	case "?", "-?", "h", "-h", "help", "--help":
@@ -158,9 +158,8 @@ func main() {
 		//case "c", "clone", "continue", "create":
 		writeUpdate = true
 
-		// pending: if os.Args[2] == 0 then create a new task!
-
-		tSource, ok := tasks[os.Args[2]]
+		//tSource, ok := tasks[os.Args[2]]
+		tSource, ok := task.GetTask(os.Args[2], tasks)
 
 		if ok {
 			t = task.NewTask()
@@ -208,7 +207,7 @@ func main() {
 		writeUpdate = true
 
 		// first: the task ID
-		t, ok := tasks[os.Args[2]]
+		t, ok := task.GetTask(os.Args[2], tasks)
 
 		if ok {
 			fmt.Println(t)
