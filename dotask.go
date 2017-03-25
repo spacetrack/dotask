@@ -34,32 +34,35 @@ func main() {
 	// --- command "help"
 	// --- ... print the help text
 	// ---
-	case "-v", "--version", "version":
+	case "v", "-v", "version", "--version":
 		writeUpdate = false
 
-		fmt.Println("dotask version 0.9.4 - 2015-03-23; (c) 2014 by Björn Winkler")
-		fmt.Println("/* debug */")
-		fmt.Println(time.Now().Local().Zone())
-		fmt.Println(os.Getenv("TZ"))
+		fmt.Println("dotask version 0.9.5 - 2017-03-25 - (c) 2015-2017 by Björn Winkler")
 		os.Exit(0)
 
-	case "?", "-?", "-h", "--help", "help":
+	case "?", "-?", "h", "-h", "help", "--help":
 		writeUpdate = false
 
+		fmt.Println("list all tasks:")
+		fmt.Println("	dotask l|list")
+		fmt.Println("")
 		fmt.Println("create new task:")
-		fmt.Println("dotask 0 [now-|now|now+|<timestamp> [<title>]]")
+		fmt.Println("	dotask now-|now|now+ <title>")
+		fmt.Println("	dotask n|new|0 now-|now|now+|<timestamp> <title>")
 		fmt.Println("")
 		fmt.Println("update existing task:")
-		fmt.Println("dotask ID asis|now-|now|now+|<timestamp> [<title>]")
+		fmt.Println("	dotask u|update ID asis|now-|now|now+|<timestamp> [<title>]")
 		fmt.Println("")
-		fmt.Println("comands:")
-		fmt.Println("dotask ?|-?|help|-h|--help")
-		fmt.Println("dotask l|list")
-		fmt.Println("dotask n|now-|now|now+ [<title>]")
-		fmt.Println("dotask c|clone|continue ID [now-|now|now+|<timestamp>]")
-		fmt.Println("dotask u|update ID asis|now-|now|now+|<timestamp> [<title>]")
-		fmt.Println("dotask delete ID")
-		fmt.Println("dotask sh|shutdown [now-|now|now+|<timestamp>]")
+		fmt.Println("clone existing task as new one:")
+		fmt.Println("	dotask c|clone|continue ID [now-|now|now+|<timestamp>]")
+		fmt.Println("")
+		fmt.Println("delete a task:")
+		fmt.Println("	dotask delete ID")
+		fmt.Println("")
+		fmt.Println("more commands:")
+		fmt.Println("	dotask ?|-?|help|-h|--help")
+		fmt.Println("	dotask sh|shutdown [now-|now|now+|<timestamp>]")
+		fmt.Println("	dotask v|version")
 
 		os.Exit(0)
 
@@ -110,19 +113,11 @@ func main() {
 		fmt.Println(t)
 
 	// ---
-	// --- command "new"
+	// --- command "now"
 	// --- ... create a new task and store it
 	// ---
-	case "n", "new", "now", "now+", "now-":
+	case "now", "now+", "now-":
 		writeUpdate = true
-
-		if os.Args[1] == "n" {
-			os.Args[1] = "now"
-		}
-
-		if os.Args[1] == "new" {
-			os.Args[1] = "now"
-		}
 
 		t = task.NewTask()
 		t.Timestamp, err = parseTime(os.Args[1])
@@ -185,43 +180,16 @@ func main() {
 		tasks[t.Id] = t
 		fmt.Println(t)
 
-	case "debug":
-		fmt.Println(parseTime(os.Args[2]))
-
 	// ---
-	// --- no command, but "<ID>"
-	// --- ... create a new task if ID == 0 or
-	// --  update existing task and store it
+	// --- command "new"
+	// --- ... create a new task and store it
 	// ---
-	default:
+	case "n", "new", "0":
 		writeUpdate = true
+		t = task.NewTask()
 
-		// first: the task ID
-		t, ok := tasks[os.Args[1]]
+		t.Timestamp, err = parseTime(os.Args[2])
 
-		if ok {
-			fmt.Println(t)
-		} else {
-			if os.Args[1] == "0" {
-				t = task.NewTask()
-			} else {
-				fmt.Println("unkown task id \"" + os.Args[1] + "\"; use \"0\" to create a new task")
-				os.Exit(-1)
-			}
-		}
-
-		// second: asis, now, time or date + time
-		switch os.Args[2] {
-		case "asis":
-			// nothing
-
-		default:
-			t.Timestamp, err = parseTime(os.Args[2])
-		}
-
-		// third: the title
-		// ... or "-e", "--edit" for interactive editing (to avoid hassle
-		// with quotes and ampersands)
 		if len(os.Args) > 3 {
 			t.Title = strings.Join(os.Args[3:], " ")
 		}
@@ -229,6 +197,63 @@ func main() {
 		tasks[t.Id] = t
 		fmt.Println(t)
 
+	// ---
+	// --- command "u" / "update"
+	// --- ... update existing task
+	// ---
+	// --- example: dotask u 1413491670-9055 asis new text
+	// ---
+	case "u", "update":
+		//case "c", "clone", "continue", "create":
+		writeUpdate = true
+
+		// first: the task ID
+		t, ok := tasks[os.Args[2]]
+
+		if ok {
+			fmt.Println(t)
+		} else {
+			if os.Args[2] == "0" {
+				t = task.NewTask()
+			} else {
+				fmt.Println("unkown task id \"" + os.Args[2] + "\"; use \"0\" to create a new task")
+				os.Exit(-1)
+			}
+		}
+
+		// second: asis, now, time or date + time
+		switch os.Args[3] {
+		case "asis":
+			// nothing
+
+		default:
+			t.Timestamp, err = parseTime(os.Args[3])
+		}
+
+		// third: the title
+		// ... or "-e", "--edit" for interactive editing (to avoid hassle
+		// with quotes and ampersands)
+		if len(os.Args) > 4 {
+			t.Title = strings.Join(os.Args[4:], " ")
+		}
+
+		tasks[t.Id] = t
+		fmt.Println(t)
+
+
+	case "debug":
+		fmt.Println(time.Now().Local().Zone())
+		fmt.Println(os.Getenv("TZ"))
+
+	// ---
+	// --- no command, but "<ID>"
+	// --- ... create a new task if ID == 0 or
+	// --  update existing task and store it
+	// ---
+	default:
+		writeUpdate = false
+		fmt.Println("unkown comamand \"" + os.Args[2] + "\"")
+		os.Exit(-1)
 	}
 
 	// ---
