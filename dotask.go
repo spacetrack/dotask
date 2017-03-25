@@ -246,9 +246,7 @@ func main() {
 		fmt.Println(os.Getenv("TZ"))
 
 	// ---
-	// --- no command, but "<ID>"
-	// --- ... create a new task if ID == 0 or
-	// --  update existing task and store it
+	// --- invalid command
 	// ---
 	default:
 		writeUpdate = false
