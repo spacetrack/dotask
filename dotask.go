@@ -37,7 +37,7 @@ func main() {
 	case "v", "-v", "version", "--version":
 		writeUpdate = false
 
-		fmt.Println("dotask version 1.0.0 - 2017-03-25 - (c) 2015-2017 by Björn Winkler")
+		fmt.Println("dotask version 1.0.1 - 2017-03-27 - (c) 2015-2017 by Björn Winkler")
 		os.Exit(0)
 
 	case "?", "-?", "h", "-h", "help", "--help":

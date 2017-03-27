@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 	"strings"
+	"sort"
 )
 
 type Task struct {
@@ -28,21 +29,29 @@ func GetTask(id string, tasks map[string]*Task) (*Task, bool) {
 	t, ok := tasks[id]
 
 	if !ok {
-		var this_key string
-
 		// add "-" if not part of the string
 		if !strings.Contains(id, "-") {
 			id = "-" + id
 		}
 
-		// find the last substring of the key
-		for key, _ := range tasks {
+		timeline := []*Task{}
+
+		// find the elements with the id as substring of the key
+		for key, aTask := range tasks {
 			if strings.Contains(key, id) {
-				this_key = key;
+				timeline = append(timeline, aTask)
 			}
 		}
 
-		t, ok = tasks[this_key]
+		// sort timeline
+		sort.Sort(ByDate(timeline))
+
+		// return last element of timeline
+		if len(timeline) > 0 {
+			return timeline[len(timeline)-1], true
+		} else {
+			return nil, false
+		}
 	}
 
 	return t, ok
@@ -88,3 +97,4 @@ func (t ByDate) Swap(i, j int) {
 func (t ByDate) Less(i, j int) bool {
 	return t[i].Timestamp.Before(t[j].Timestamp)
 }
+
